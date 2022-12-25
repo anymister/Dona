@@ -4,8 +4,8 @@ import requests
 import json
 
 # Remplacez YOUR_API_KEY par votre clé d'API et PAGE_ACCESS_TOKEN par votre jeton d'accès de page
-openai.api_key = "YOUR_API_KEY"
-PAGE_ACCESS_TOKEN = "PAGE_ACCESS_TOKEN"
+openai.api_key = "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"
+PAGE_ACCESS_TOKEN = "EAARFNY9Vz1UBAH2465vUKpAw5QUDnGsBNZBE4DnPlmTY3pLLI6lkOWL9UvcY3d6BF26nIXPFmOfF84xPygHtl1XHmmEf8fIQcVMkUkEEPiCiWObgzVPfLJPzPQAqlEvVphqZBejrsRGVRUACP2Fy7VZClWYLv53jb436P34z5tTpkcr5MU5"
 
 def ask_question(prompt):
   # Envoyez une demande à l'API de ChatGPT en utilisant la méthode completions
