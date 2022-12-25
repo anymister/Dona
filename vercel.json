@@ -1,7 +1,7 @@
 {
   "env": {
-    "openia_token": "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",
-    "page_token": "EAARFNY9Vz1UBAIvwKl0NGdfraJo2EAne7TFB4Hdt3PCq4NyGEZBNDBvvtosr87vl90WPxVcA6gYKMUXNH6nqiBLk1MHJdWVjUxHs2tnbXugrRYNMwvCeoQfAZANmApvRkfrXAnW2GsWrSDmigyGbBRDUPr0ktTiWRyxKbXorHZBWi9HmOVO",
+    "YOUR_API_KEY": "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",
+    "YOUR_MESSENGER_ACCESS_TOKEN ": "EAARFNY9Vz1UBAEVnWlA7ttwUFp96jXBIPN0RCt0Y1xo0Qy53xvn4lqFKWoSCb7fIrRePPtfkxey2sE6cwjrmSGMwXWlm7k59NOVkcnY70oKCvZBrJFi0fiIXsZBOXCCLv8NOiGGsmI94My0SCUbx9r0DHsahZCXTDOFohrEehnBihjcsYuZB",
     "verify_token": "5r2br-1672011027049-09c3892f6b58"
   }
 }
