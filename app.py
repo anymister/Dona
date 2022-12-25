@@ -1,44 +1,28 @@
-import openai
 import os
-import requests
+import facebook
+from flask import Flask, request
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
+app = Flask(__name__)
 
-def handle_message(event, context):
-  # Récupération du message envoyé par l'utilisateur
-  message = event["message"]["text"]
-  
-  # Utilisation de ChatGPT pour générer une réponse
-  response = openai.Completion.create(
-    engine="chatgpt",
-    prompt=message,
-    max_tokens=1024
-  ).text
-  
-  # Envoi de la réponse à l'utilisateur
-  send_message(response)
+# Récupérez votre jeton d'accès à partir de votre application Messenger sur le site de développeurs de Facebook
+ACCESS_TOKEN = os.environ["MESSENGER_ACCESS_TOKEN"]
 
-def send_message(text):
-  # Configuration de l'URL de l'API de Messenger
-  api_url = "https://graph.facebook.com/v6.0/me/messages"
-  params = {
-    "access_token": os.environ["MESSENGER_ACCESS_TOKEN"]
-  }
-  
-  # Construction du payload de la requête
-  data = {
-    "recipient": {
-      "id": os.environ["MESSENGER_USER_ID"]
-    },
-    "message": {
-      "text": text
-    }
-  }
-  
-  # Envoi de la requête à l'API de Messenger
-  response = requests.post(api_url, params=params, json=data)
+# Créez une instance de l'API de Messenger de Facebook en utilisant votre jeton d'accès
+graph = facebook.GraphAPI(access_token=ACCESS_TOKEN, version="2.1")
 
-if response.status_code != 200:
-  print("An error occurred:", response.text)
-else:
-  print("Successfully sent message:", text)
+def send_hello_message(sender_id):
+    message = "Bonjour!"
+    graph.send_message(
+        message=message,
+        recipient_id=sender_id,
+    )
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    # Récupérez l'ID de l'expéditeur du message à partir de la requête POST
+    sender_id = request.json['entry'][0]['messaging'][0]['sender']['id']
+    send_hello_message(sender_id)
+    return "Success"
+
+if __name__ == '__main__':
+    app.run()
