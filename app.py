@@ -1,70 +1,37 @@
-import openai
-import os
+from flask import Flask, request
 import requests
-import json
 
-openai.api_key = os.environ["openia_token"]
+app = Flask(__name__)
 
-def generate_response(prompt):
-  completions = openai.Completion.create(
-    engine="text-davinci-002",
-    prompt=prompt,
-    max_tokens=1024,
-    n=1,
-    stop=None,
-    temperature=0.5,
-  )
+@app.route("/webhook", methods=["GET", "POST"])
+def webhook():
+  if request.method == "POST":
+    # Récupérez le message envoyé par l'utilisateur
+    message = request.get_json()
+    print(message)
 
-  message = completions.choices[0].text
-  return message
+    # Envoyez une réponse à l'utilisateur en utilisant l'API de chatgpt
+    response = requests.post(
+      "https://api.openai.com/v1/chatgpt",
+      headers={"Content-Type": "application/json", "Authorization": "Bearer YOUR_API_KEY"},
+      json={"prompt": message["text"], "model": "chatgpt"}
+    )
 
-def handle_message(event):
-  sender_id = event['sender']['id']
-  message = event['message']['text']
-  response = generate_response(prompt=message)
+    # Récupérez la réponse de l'API de chatgpt
+    response_text = response.json()["response"]
 
-  send_message(sender_id, response)
+    # Envoyez la réponse à l'utilisateur via l'API de Messenger
+    requests.post(
+      "https://graph.facebook.com/v6.0/me/messages",
+      params={"access_token": "YOUR_MESSENGER_ACCESS_TOKEN"},
+      json={
+        "recipient": {"id": message["sender"]["id"]},
+        "message": {"text": response_text}
+      }
+    )
 
-def send_message(recipient_id, message):
-  params = {
-    "access_token": os.environ["page_token"]
-  }
-  headers = {
-    "Content-Type": "application/json"
-  }
-  data = {
-    "recipient": {
-      "id": recipient_id
-    },
-    "message": {
-      "text": message
-    }
-  }
-  r = requests.post("https://graph.facebook.com/v6.0/me/messages", params=params, headers=headers, data=json.dumps(data))
-  if r.status_code != 200:
-    print(r.status_code)
-    print(r.text)
+  # Renvoyez une réponse vide pour indiquer que le webhook a été reçu
+  return ""
 
-def verify_webhook(req):
-  if req.args.get("hub.mode") == "subscribe" and req.args.get("hub.challenge"):
-    if not req.args.get("hub.verify_token") == os.environ["verify_token"]:
-      return "Verification token mismatch", 403
-    return req.args["hub.challenge"], 200
-
-  return "Hello world", 200
-
-def handle_webhook(req):
-  if req.method == "POST":
-    print("Handling POST request")
-    data = json.loads(req.data)
-    if data["object"] == "page":
-      for entry in data["entry"]:
-        for messaging_event in entry["messaging"]:
-          if messaging_event.get("message"):
-            handle_message(messaging_event)
-          else:
-            print("Unknown event: ", messaging_event)
-    return "OK", 200
-  else:
-    print("Invalid request method")
-    return "Invalid request method", 405
+if __name__ == "__main__":
+  app.run()
