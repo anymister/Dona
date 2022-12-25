@@ -4,7 +4,7 @@
   "builds": [
     {
       "src": "*.py",
-      "use": "@vercel/python-now"
+      "use": "@vercel/python-vercel"
     }
   ],
   "routes": [
