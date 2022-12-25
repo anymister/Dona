@@ -1,28 +1,70 @@
+import openai
 import os
-import facebook
-from flask import Flask, request
+import requests
+import json
 
-app = Flask(__name__)
+openai.api_key = os.environ["openia_token"]
 
-# Récupérez votre jeton d'accès à partir de votre application Messenger sur le site de développeurs de Facebook
-ACCESS_TOKEN = os.environ["MESSENGER_ACCESS_TOKEN"]
+def generate_response(prompt):
+  completions = openai.Completion.create(
+    engine="text-davinci-002",
+    prompt=prompt,
+    max_tokens=1024,
+    n=1,
+    stop=None,
+    temperature=0.5,
+  )
 
-# Créez une instance de l'API de Messenger de Facebook en utilisant votre jeton d'accès
-graph = facebook.GraphAPI(access_token=ACCESS_TOKEN, version="2.1")
+  message = completions.choices[0].text
+  return message
 
-def send_hello_message(sender_id):
-    message = "Bonjour!"
-    graph.send_message(
-        message=message,
-        recipient_id=sender_id,
-    )
+def handle_message(event):
+  sender_id = event['sender']['id']
+  message = event['message']['text']
+  response = generate_response(prompt=message)
 
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    # Récupérez l'ID de l'expéditeur du message à partir de la requête POST
-    sender_id = request.json['entry'][0]['messaging'][0]['sender']['id']
-    send_hello_message(sender_id)
-    return "Success"
+  send_message(sender_id, response)
 
-if __name__ == '__main__':
-    app.run()
+def send_message(recipient_id, message):
+  params = {
+    "access_token": os.environ["page_token"]
+  }
+  headers = {
+    "Content-Type": "application/json"
+  }
+  data = {
+    "recipient": {
+      "id": recipient_id
+    },
+    "message": {
+      "text": message
+    }
+  }
+  r = requests.post("https://graph.facebook.com/v6.0/me/messages", params=params, headers=headers, data=json.dumps(data))
+  if r.status_code != 200:
+    print(r.status_code)
+    print(r.text)
+
+def verify_webhook(req):
+  if req.args.get("hub.mode") == "subscribe" and req.args.get("hub.challenge"):
+    if not req.args.get("hub.verify_token") == os.environ["VERIFY_TOKEN"]:
+      return "Verification token mismatch", 403
+    return req.args["hub.challenge"], 200
+
+  return "Hello world", 200
+
+def handle_webhook(req):
+  if req.method == "POST":
+    print("Handling POST request")
+    data = json.loads(req.data)
+    if data["object"] == "page":
+      for entry in data["entry"]:
+        for messaging_event in entry["messaging"]:
+          if messaging_event.get("message"):
+            handle_message(messaging_event)
+          else:
+            print("Unknown event: ", messaging_event)
+    return "OK", 200
+  else:
+    print("Invalid request method")
+    return "Invalid request method", 405
