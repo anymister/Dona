@@ -47,7 +47,7 @@ def send_message(recipient_id, message):
 
 def verify_webhook(req):
   if req.args.get("hub.mode") == "subscribe" and req.args.get("hub.challenge"):
-    if not req.args.get("hub.verify_token") == os.environ["VERIFY_TOKEN"]:
+    if not req.args.get("hub.verify_token") == os.environ["verify_token"]:
       return "Verification token mismatch", 403
     return req.args["hub.challenge"], 200
 
