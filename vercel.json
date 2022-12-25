@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "my-chatbot",
+  "builds": [
+    {
+      "src": "*.py",
+      "use": "@vercel/python-now"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/webhook",
+      "dest": "main.py"
+    }
+  ]
+}
