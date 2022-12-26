@@ -1,6 +1,6 @@
 from flask import Flask, request
 import os
-
+print("<html><body><title>Hello World !</title></body></html>")
 app = Flask(__name__)
 
 # Récupérez les variables d'environnement
