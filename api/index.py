@@ -1,13 +1,28 @@
-import requests
+import os
+from flask import Flask, request
 
-# Modifiez l'URL ci-dessous pour correspondre à l'URL de votre webhook
-url = "https://your-chatbot-url.vercel.app/webhook"
+app = Flask(__name__)
 
-# Modifiez le jeton de vérification ci-dessous pour correspondre au jeton de vérification de votre application sur Messenger
-verify_token = "your-verify-token"
+# Récupérez les variables d'environnement
+VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 
-# Envoyez une requête GET à votre webhook en incluant le jeton de vérification
-response = requests.get(url, params={"hub.verify_token": verify_token})
+@app.route("/webhook", methods=["GET", "POST"])
+def webhook():
+  if request.method == "GET":
+    # Vérifiez que le jeton de vérification envoyé par Messenger est correct
+    if verify_token == request.args.get("hub.verify_token"):
+      # Renvoyez le jeton de vérification à Messenger
+      return request.args.get("hub.challenge")
+    else:
+      # Renvoyez une réponse vide si le jeton de vérification est incorrect
+      return ""
+  elif request.method == "POST":
+    # Récupérez le message envoyé par l'utilisateur
+    message = request.get_json()
+    print(message)
 
-# Affichez la réponse de votre chatbot
-print(response.text)
+    # Renvoyez une réponse vide
+    return ""
+
+if __name__ == "__main__":
+  app.run()
