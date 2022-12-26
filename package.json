@@ -2,6 +2,6 @@
   "name": "donajs",
   "version": "1.0.0",
   "dependencies": {
-    "openai": "2.8.0"
+    "openai": "*"
   }
 }
