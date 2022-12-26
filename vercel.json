@@ -1,7 +1,20 @@
 {
+  "version": 2,
+  "builds": [
+    {
+      "src": "*.py",
+      "use": "@now/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/.*",
+      "dest": "app.py"
+    }
+  ],
   "env": {
-    "YOUR_API_KEY": "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",
-    "YOUR_MESSENGER_ACCESS_TOKEN ": "EAARFNY9Vz1UBAEVnWlA7ttwUFp96jXBIPN0RCt0Y1xo0Qy53xvn4lqFKWoSCb7fIrRePPtfkxey2sE6cwjrmSGMwXWlm7k59NOVkcnY70oKCvZBrJFi0fiIXsZBOXCCLv8NOiGGsmI94My0SCUbx9r0DHsahZCXTDOFohrEehnBihjcsYuZB",
-    "my_verify_token": "167201102704909c3892f6b58"
+    "API_KEY": "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",
+    "MESSENGER_ACCESS_TOKEN": "EAARFNY9Vz1UBAEVnWlA7ttwUFp96jXBIPN0RCt0Y1xo0Qy53xvn4lqFKWoSCb7fIrRePPtfkxey2sE6cwjrmSGMwXWlm7k59NOVkcnY70oKCvZBrJFi0fiIXsZBOXCCLv8NOiGGsmI94My0SCUbx9r0DHsahZCXTDOFohrEehnBihjcsYuZB",
+    "VERIFY_TOKEN": "167201102704909c3892f6b58"
   }
 }
