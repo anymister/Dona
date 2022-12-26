@@ -8,6 +8,6 @@
     { "src": "/(.*)", "dest": "/index.js" }
   ],
   "env": {
-    "OPENAI_API_KEY": "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"
+    "OPENAI_API_KEY": "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"
   }
 }
