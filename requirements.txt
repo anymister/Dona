@@ -1,4 +1,4 @@
-openia
+openai
 requests
 request
 os
