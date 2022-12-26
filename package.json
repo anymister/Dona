@@ -1,8 +1,7 @@
 {
-  "name": "dona",
+  "name": "donajs",
   "version": "1.0.0",
   "dependencies": {
-    "express": "^4.17.1",
-    "openai": "^2.9.0"
+    "openai": "2.8.0"
   }
 }
