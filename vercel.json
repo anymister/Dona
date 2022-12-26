@@ -4,6 +4,7 @@
     {
       "src": "*.py",
       "use": "@now/python"
+      "pip_dependencies": "requirements.txt"
     }
   ],
   "routes": [
