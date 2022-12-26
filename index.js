@@ -4,7 +4,7 @@ const openai = require('openai');
 const app = express();
 const port = process.env.PORT || 3000;
 
-openai.apiKey = "YOUR_API_KEY";
+openai.apiKey = "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";
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
