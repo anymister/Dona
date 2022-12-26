@@ -1,4 +1,0 @@
-openai
-requests
-os
-flask
